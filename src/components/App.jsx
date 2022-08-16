@@ -35,62 +35,35 @@ export const App = () => {
       window.removeEventListener('click', handleClickList);
     };
   });
-  // useEffect(() => {
-  //   if (value === '') {
-  //     return;
-  //   }
-  //   async function getImages() {
-  //     try {
-  //       const { data } = await fetchImages(value, page);
-  //       console.log(data);
-  //       setPhoto(data);
-  //       setStatus(Status.RESOLVED);
-  //     } catch (error) {
-  //       setError(error);
-  //       setStatus(Status.REJECTED);
-  //     }
-  //   }
-  //   getImages();
-  // }, [value, page]);
 
   useEffect(() => {
-    // fetchImages(value, page).then(data => {
-    //   console.log(data);
-    // });
-
     if (value === '') {
       return;
     }
 
     setStatus(Status.PENDING);
-    fetch(
-      `https://pixabay.com/api/?q=${value}&page=${page}&key=28032528-2733f4db32465b2bae0fa9703&image_type=photo&orientation=horizontal&per_page=12`
-    )
-      .then(res => {
-        if (res.ok) {
-          return res.json();
-        }
-
-        return Promise.reject(
-          new Error(
-            `The query with the name ${value} does not exist. Try another one.`
-          )
-        );
-      })
-      .then(data => {
+    async function getImages() {
+      try {
+        const data = await fetchImages(value, page);
+        console.log(data);
         if (data.hits.length === 0) {
-          return Promise.reject(new Error(`No results found.`));
+          setError('No results found.');
+          setStatus(Status.REJECTED);
+          return new Error(`No results found.`);
         }
         setPhoto(prevState => {
           return page === 1 ? [...data.hits] : [...prevState, ...data.hits];
         });
         setStatus(Status.RESOLVED);
-      })
-      .catch(err => {
-        setError(err);
+      } catch (error) {
+        console.log(error);
+        setError(error);
         setStatus(Status.REJECTED);
-      });
-  }, [page, value]);
+      }
+    }
+    getImages();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, page]);
 
   // Funtion to Submit the form
   const handleSubmitForm = value => {
@@ -121,6 +94,47 @@ export const App = () => {
     setIsOpen(false);
     setLargeImgURL('');
   };
+
+  // const renderImagesFromStatus = () => {
+  //   switch (status) {
+  //     case Status.IDLE:
+  //       return (
+  //         <div className={css.ImageGalleryWrapper}>
+  //           <MovingComponent
+  //             type="pulse"
+  //             duration="1000ms"
+  //             delay="0s"
+  //             direction="normal"
+  //             timing="ease"
+  //             iteration="infinite"
+  //             fillMode="none"
+  //           >
+  //             <h2 className={css.IdleText}> Enter The Text</h2>
+  //           </MovingComponent>
+  //         </div>
+  //       );
+  //     case Status.PENDING:
+  //       return (
+  //         <div className={css.ImageGalleryContainer}>
+  //           <InfinitySpin width="200" color="#3f51b5" />
+  //         </div>
+  //       );
+  //     case Status.RESOLVED:
+  //       return (
+  //         <>
+  //           <ul id="ImageGallery" className={css.ImageGallery}>
+  //             <ImageGalleryItem photo={photo} />
+  //           </ul>
+  //           <Button onClick={loadMore} />
+  //           {isOpen && <Modal onClose={closeModal} largeImgURL={largeImgURL} />}
+  //         </>
+  //       );
+  //     case Status.REJECTED:
+  //       return toast.error(`${error}`);
+  //     default:
+  //       return null;
+  //   }
+  // };
 
   // RENDER
 
@@ -166,7 +180,7 @@ export const App = () => {
         <ul id="ImageGallery" className={css.ImageGallery}>
           <ImageGalleryItem photo={photo} />
         </ul>
-        <Button onClick={loadMore} />
+        {status === Status.RESOLVED && <Button onClick={loadMore} />}
         {isOpen && <Modal onClose={closeModal} largeImgURL={largeImgURL} />}
       </>
       {/* )} */}
