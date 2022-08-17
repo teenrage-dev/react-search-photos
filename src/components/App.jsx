@@ -37,7 +37,7 @@ export const App = () => {
   });
 
   useEffect(() => {
-    if (value === '') {
+    if (value.trim() === '') {
       return;
     }
 
@@ -45,7 +45,7 @@ export const App = () => {
     async function getImages() {
       try {
         const data = await fetchImages(value, page);
-        console.log(data);
+        // console.log(data);
         if (data.hits.length === 0) {
           setError('No results found.');
           setStatus(Status.REJECTED);
@@ -62,11 +62,23 @@ export const App = () => {
       }
     }
     getImages();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, page]);
 
   // Funtion to Submit the form
-  const handleSubmitForm = value => {
+  // const handleChangeValue = value => {
+  //   console.log(value);
+  //   setValue(value);
+
+  //   setPage(1);
+  // };
+
+  const handleChangeInput = value => {
+    if (value.trim() === '') {
+      // toast.error('Error: Please enter a search term.');
+      setStatus(Status.IDLE);
+      return;
+    }
+
     setValue(value);
     setPage(1);
   };
@@ -140,7 +152,7 @@ export const App = () => {
 
   return (
     <div className={css.App}>
-      <Searchbar onSubmit={handleSubmitForm} />
+      <Searchbar onSearch={handleChangeInput} />
       <ToastContainer
         position="top-right"
         autoClose={3000}
