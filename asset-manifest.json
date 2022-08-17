@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/react-search-photos/static/css/main.c5290242.css",
+    "main.js": "/react-search-photos/static/js/main.610ac102.js",
+    "index.html": "/react-search-photos/index.html",
+    "static/media/search.svg": "/react-search-photos/static/media/search.f4c53e30d11042305d4c.svg",
+    "main.c5290242.css.map": "/react-search-photos/static/css/main.c5290242.css.map",
+    "main.610ac102.js.map": "/react-search-photos/static/js/main.610ac102.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c5290242.css",
+    "static/js/main.610ac102.js"
+  ]
+}
